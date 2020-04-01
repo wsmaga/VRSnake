@@ -1,0 +1,112 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &1
+MonoBehaviour:
+  m_ObjectHideFlags: 61
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 1666186674, guid: 68c7e4565cde54155bb78d8e935f1ddb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cacheType: 2
+  lastUpdatedAtString: 2020-04-01T13:15:26.209+02:00
+  initializedAtString: 2020-04-01T13:05:24.590+02:00
+  localBranches:
+  - name: develop
+    tracking: origin/develop
+  - name: init_project_2019.3.7f1
+    tracking: 
+  - name: master
+    tracking: origin/master
+  remoteBranches:
+  - name: origin/develop
+    tracking: '[None]'
+  - name: origin/HEAD
+    tracking: '[None]'
+  - name: upstream/develop
+    tracking: '[None]'
+  - name: upstream/master
+    tracking: '[None]'
+  remotes:
+  - name: origin
+    url: https://github.com/Jar0T/VRSnake.git
+    login: 
+    user: 
+    host: 
+    function: 0
+    token: 
+  - name: upstream
+    url: https://github.com/wsmaga/VRSnake.git
+    login: 
+    user: 
+    host: 
+    function: 0
+    token: 
+  localConfigBranches:
+    keys:
+    - develop
+    - init_project_2019.3.7f1
+    - master
+    values:
+    - name: develop
+      remote:
+        name: origin
+        url: https://github.com/Jar0T/VRSnake.git
+      trackingBranch: develop
+    - name: init_project_2019.3.7f1
+      remote:
+        name: 
+        url: 
+      trackingBranch: 
+    - name: master
+      remote:
+        name: origin
+        url: https://github.com/Jar0T/VRSnake.git
+      trackingBranch: master
+  remoteConfigBranches:
+    keys:
+    - origin
+    - upstream
+    subKeys:
+    - Values:
+      - develop
+      - HEAD
+    - Values:
+      - develop
+      - master
+    subKeyValues:
+    - Values:
+      - name: develop
+        remote:
+          name: origin
+          url: https://github.com/Jar0T/VRSnake.git
+        trackingBranch: 
+      - name: HEAD
+        remote:
+          name: origin
+          url: https://github.com/Jar0T/VRSnake.git
+        trackingBranch: 
+    - Values:
+      - name: develop
+        remote:
+          name: upstream
+          url: https://github.com/wsmaga/VRSnake.git
+        trackingBranch: 
+      - name: master
+        remote:
+          name: upstream
+          url: https://github.com/wsmaga/VRSnake.git
+        trackingBranch: 
+  configRemotes:
+    keys:
+    - origin
+    - upstream
+    values:
+    - name: origin
+      url: https://github.com/Jar0T/VRSnake.git
+    - name: upstream
+      url: https://github.com/wsmaga/VRSnake.git
