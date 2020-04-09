@@ -23,8 +23,11 @@ public class TrailGenerator : MonoBehaviour
     private List<Vector3> vertices; //współrzędne wierzchołków
     private List<int> triangles; //numeracja wierzchołków
     private int currTriangleNo; //aktualny numer wierzchołka trójkąta (rośnie o 1 przy tworzeniu vertice)
-    [SerializeField]private GameObject player;
-    [SerializeField]private float treshold = 0.5f; //jak duży ma byc dystans pomiędzy starą lokacją a nową żeby stwierdzić że gracz się rusza
+    [SerializeField] private GameObject player;
+    [SerializeField] private float distanceTreshold = 0.5f; //jak duży ma byc dystans pomiędzy starą lokacją a nową żeby stwierdzić że gracz się rusza
+    [SerializeField] private float timeToNextUpdate = 0.3f;
+    [SerializeField] private uint updatesBeforeGap = 15;
+    [SerializeField] private uint updatesAfterGap = 3;
     private bool isGenerating; //zmienna przechowująca informacje czy ma generować scieżkę czy nie
 
     //przed funkcją Start
@@ -35,8 +38,8 @@ public class TrailGenerator : MonoBehaviour
         meshCollider = GetComponent<MeshCollider>();
         headTransforms = new Transform[4];
         lastPoints = new Vector3[4];
-
-        //wyszukanie a następnie markerów w dzieciach obiektu
+        currTriangleNo = -1;
+        //wyszukanie a następnie przypisanie markerów mesha w dzieciach obiektu
         Transform mp = player.transform.Find("PlayerHead").transform.Find("MeshPoints");
         headTransforms[(int)d.UL] = mp.Find("MeshPointUL").transform;
         headTransforms[(int)d.UR] = mp.Find("MeshPointUR").transform;
@@ -44,34 +47,21 @@ public class TrailGenerator : MonoBehaviour
         headTransforms[(int)d.BR] = mp.Find("MeshPointBR").transform;
 
 
-        //dodanie markerów do mesha żeby wygenerować początek ścieżki
         vertices = new List<Vector3>();
-        vertices.Add(headTransforms[(int)d.UL].position);
-        vertices.Add(headTransforms[(int)d.UR].position);
-        vertices.Add(headTransforms[(int)d.BL].position);
-        vertices.Add(headTransforms[(int)d.UR].position);
-        vertices.Add(headTransforms[(int)d.BR].position);
-        vertices.Add(headTransforms[(int)d.BL].position);
-
-        //numerowanie wierzchołków
-        triangles = new List<int>() { 0, 1, 2, 3, 4, 5 };
-        currTriangleNo = 5;
-
-        SetLastPoints();
+        triangles = new List<int>();
         
     }
     // Start is called before the first frame update
     void Start()
     {
-        
-        GenerateMesh();
-        InvokeRepeating("GenerateTrail", 0.5f, 0.3f);
+        StartCoroutine(TrailGenerationCoroutine());
+
     }
 
     //funkcja dodająca nowe trójkaty do tablic verices i triangles
-    void GenerateTrail()
+    void GenerateTrailPart()
     {
-        if (CheckIfMoved() && isGenerating)
+        if (isGenerating)
         {
             //lewa ścianka
             {
@@ -151,23 +141,22 @@ public class TrailGenerator : MonoBehaviour
                 vertices.Add(headTransforms[(int)d.BR].position);
                 triangles.Add(currTriangleNo += 1);
             }
-
-
-            GenerateMesh();
+            UpdateMesh();
+            SetLastPoints();
         }
-        else
-            Debug.Log("Player didn't moved, ignoring drawing mesh");
-        SetLastPoints();
+        
     }
 
     //funkcja czyszcząca starego mesha i generująca nowego mesha na podstawie aktualnych tablic
-    void GenerateMesh()
+    void UpdateMesh()
     {
         mesh.Clear();
         mesh.vertices = vertices.ToArray();
         mesh.triangles = triangles.ToArray();
-        meshCollider.sharedMesh = mesh;
+        mesh.Optimize();
         mesh.RecalculateNormals();
+        meshCollider.sharedMesh = mesh;
+      
     }
 
     //funkcja przypisująca aktualne wartości do tablicy lastPoints
@@ -182,31 +171,91 @@ public class TrailGenerator : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-       
+
+
+    }
+    
+    //funkcja tworząca początkową ściankę ogona
+    private void GenerateFirstPlane()
+    {
+      
+        vertices.Add(headTransforms[(int)d.UL].position);
+        triangles.Add(currTriangleNo += 1);
+        vertices.Add(headTransforms[(int)d.UR].position);
+        triangles.Add(currTriangleNo += 1);
+        vertices.Add(headTransforms[(int)d.BL].position);
+        triangles.Add(currTriangleNo += 1);
+        vertices.Add(headTransforms[(int)d.UR].position);
+        triangles.Add(currTriangleNo += 1);
+        vertices.Add(headTransforms[(int)d.BR].position);
+        triangles.Add(currTriangleNo += 1);
+        vertices.Add(headTransforms[(int)d.BL].position);
+        triangles.Add(currTriangleNo += 1);
+        SetLastPoints();
+        UpdateMesh();
     }
 
-    //funkcja sprawdzająca czy gracz poruszył się od ostatniego wywołania funkcji GenerateTrail
-    private bool CheckIfMoved()
+    //funkcja tworząca końcową ściankę ogona
+    private void GenerateLastPlane()
     {
-        
-        if (Mathf.Abs(Vector3.Distance(headTransforms[0].position, lastPoints[0])) <= treshold &&
-            Mathf.Abs(Vector3.Distance(headTransforms[1].position, lastPoints[1])) <= treshold &&
-            Mathf.Abs(Vector3.Distance(headTransforms[2].position, lastPoints[2])) <= treshold &&
-            Mathf.Abs(Vector3.Distance(headTransforms[3].position, lastPoints[3])) <= treshold)
-            return false;
-        else
-            return true;
+        vertices.Add(lastPoints[(int)d.BL]);
+        triangles.Add(currTriangleNo += 1);
+        vertices.Add(lastPoints[(int)d.UR]);
+        triangles.Add(currTriangleNo += 1);
+        vertices.Add(lastPoints[(int)d.UL]);
+        triangles.Add(currTriangleNo += 1);
+        vertices.Add(lastPoints[(int)d.BL]);
+        triangles.Add(currTriangleNo += 1);
+        vertices.Add(lastPoints[(int)d.BR]);
+        triangles.Add(currTriangleNo += 1);
+        vertices.Add(lastPoints[(int)d.UR]);
+        triangles.Add(currTriangleNo += 1);
+        UpdateMesh();
+    }
+    //korutyna generująca ogon gracza
+    IEnumerator TrailGenerationCoroutine()
+    {
+        while(isGenerating)
+        {
+            Debug.Log("COROUTINE:Generate first plane");
+            GenerateFirstPlane();
+            yield return new WaitForSeconds(timeToNextUpdate);
+            for (int i = 0; i < updatesBeforeGap; i++)
+            {
+                GenerateTrailPart();
+                yield return new WaitForSeconds(timeToNextUpdate);
+            }
+            Debug.Log("COROUTINE:Generate last plane");
+            GenerateLastPlane();
+            yield return new WaitForSeconds(timeToNextUpdate*updatesAfterGap);
+        }
     }
 
     //funkcje zatrzymujące i wznawiające generowanie ścieżki
     public void StopGenerating()
     {
+        StopCoroutine(TrailGenerationCoroutine());
         isGenerating = false;
-        CancelInvoke("GenerateTrail");
     }
     public void StartGenerating()
     {
+        StartCoroutine(TrailGenerationCoroutine());
         isGenerating = true;
-        InvokeRepeating("GenerateTrail", 0f, 0.3f);
+    }
+    public bool IsGenerating() { return isGenerating; }
+
+
+    //_DEPRECATED funkcja sprawdzająca czy gracz poruszył się od ostatniego wywołania funkcji GenerateTrailPart
+    //przestałem używać bo robi problemy jak gra przylaguje a nie optymalizuje prawie nic
+    private bool CheckIfMoved()
+    {
+
+        if (Mathf.Abs(Vector3.Distance(headTransforms[0].position, lastPoints[0])) <= distanceTreshold &&
+            Mathf.Abs(Vector3.Distance(headTransforms[1].position, lastPoints[1])) <= distanceTreshold &&
+            Mathf.Abs(Vector3.Distance(headTransforms[2].position, lastPoints[2])) <= distanceTreshold &&
+            Mathf.Abs(Vector3.Distance(headTransforms[3].position, lastPoints[3])) <= distanceTreshold)
+            return false;
+        else
+            return true;
     }
 }

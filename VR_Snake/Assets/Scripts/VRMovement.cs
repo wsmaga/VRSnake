@@ -45,8 +45,14 @@ public class VRMovement : MonoBehaviour
         //na potrzeby testów przy zderzeniu z ogonem przestań generować ogon
         if (hit.gameObject.tag == "Trail")
         {
-            Debug.Log("Collided with trail");
-            trailGenerator.GetComponent<TrailGenerator>().StopGenerating();
+            if (trailGenerator.GetComponent<TrailGenerator>().IsGenerating())
+            {
+                Debug.Log("Collided with Trail");
+                trailGenerator.GetComponent<TrailGenerator>().StopGenerating();
+                GameObject playerHead = this.transform.Find("PlayerHead").gameObject;
+                playerHead.layer = 0;
+                Instantiate(playerHead, playerHead.transform.position, playerHead.transform.rotation);
+            }
         }
         else if (hit.gameObject.tag != "Map")
             Debug.Log("Collided with " + hit.gameObject.tag);
