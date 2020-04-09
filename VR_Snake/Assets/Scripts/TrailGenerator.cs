@@ -15,7 +15,6 @@ enum d{ UL=0,UR=1,BL=2,BR=3}
 
 public class TrailGenerator : MonoBehaviour
 {
-    
     private Mesh mesh;
     private MeshCollider meshCollider; 
     private Transform[] headTransforms; //aktualne współrzędne markerów
@@ -29,6 +28,7 @@ public class TrailGenerator : MonoBehaviour
     [SerializeField] private uint updatesBeforeGap = 15;
     [SerializeField] private uint updatesAfterGap = 3;
     private bool isGenerating; //zmienna przechowująca informacje czy ma generować scieżkę czy nie
+    private Coroutine trailGenerationCoroutine;
 
     //przed funkcją Start
     private void Awake()
@@ -54,7 +54,7 @@ public class TrailGenerator : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        StartCoroutine(TrailGenerationCoroutine());
+        trailGenerationCoroutine=StartCoroutine(TrailGenerationCoroutine());
 
     }
 
@@ -235,12 +235,14 @@ public class TrailGenerator : MonoBehaviour
     public void StopGenerating()
     {
       
-        StopCoroutine(TrailGenerationCoroutine());
+        StopCoroutine(trailGenerationCoroutine);
+        GenerateLastPlane();
         isGenerating = false;
     }
     public void StartGenerating()
     {
-        StartCoroutine(TrailGenerationCoroutine());
+        GenerateFirstPlane();
+        trailGenerationCoroutine=StartCoroutine(TrailGenerationCoroutine());
         isGenerating = true;
     }
     public bool IsGenerating() { return isGenerating; }
