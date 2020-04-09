@@ -14,6 +14,7 @@ public class VRMovement : MonoBehaviour
     [SerializeField] private Transform cameraTransform; //pozycja i rotacja kamery
     [SerializeField] private Transform snakeHead; //pozycja i rotacja głowy węża
     [SerializeField] private GameObject trailGenerator; //obiekt generujący ogon węża
+    [SerializeField] private Material deadMaterial;
 
     // Start is called before the first frame update
     void Start()
@@ -45,8 +46,16 @@ public class VRMovement : MonoBehaviour
         //na potrzeby testów przy zderzeniu z ogonem przestań generować ogon
         if (hit.gameObject.tag == "Trail")
         {
-            Debug.Log("Collided with trail");
-            trailGenerator.GetComponent<TrailGenerator>().StopGenerating();
+            if (trailGenerator.GetComponent<TrailGenerator>().IsGenerating())
+            {
+                Debug.Log("Collided with Trail");
+                trailGenerator.GetComponent<TrailGenerator>().StopGenerating();
+                GameObject playerHead = this.transform.Find("PlayerHead").gameObject;
+                GameObject temp=Instantiate(playerHead, playerHead.transform.position, playerHead.transform.rotation);
+                temp.layer = 0;
+                temp.GetComponent<MeshRenderer>().material = deadMaterial;
+                Handheld.Vibrate();
+            }
         }
         else if (hit.gameObject.tag != "Map")
             Debug.Log("Collided with " + hit.gameObject.tag);
