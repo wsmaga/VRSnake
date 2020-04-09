@@ -234,6 +234,7 @@ public class TrailGenerator : MonoBehaviour
     //funkcje zatrzymujące i wznawiające generowanie ścieżki
     public void StopGenerating()
     {
+      
         StopCoroutine(TrailGenerationCoroutine());
         isGenerating = false;
     }
