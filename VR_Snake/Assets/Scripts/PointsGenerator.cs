@@ -14,43 +14,50 @@ public class PointsGenerator : MonoBehaviour
     //wysokość, na której znajduje się punkt początkowy raycast-a (współrzędna y punktu
     [SerializeField] float raycastBeginPointHeight;
 
-    //zmienna stanu zawierająca 
-    private bool mExists;
-
-    //referencja reprezentująca punkt do zebrania
+    //szablon punktu, który będzie spawnowany
     [SerializeField] GameObject pointTemplate;
 
+    //lista zawierająca tagi colliderów, na których może się punkt zespawnować
+    [SerializeField] List<string> allowedSurfaces;
+
+    //przesunięcie, o które przesunięty jest punkt spawnowania względem punktu-kandydata
+    Vector3 offset = new Vector3(.0f, 0.5f, .0f);
+
+    //rzeczywisty punkt znajdujący się na planszy
     private GameObject point;
 
 
     // Start is called before the first frame update
     void Start()
     {
-        mExists = false;
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (!mExists)
+        if (!point)
         {
-
+                //wylosowanie wektora
                 float xRand = Random.Range(bottomLeftConstraint.x, topRightConstraint.x);
                 float zRand = Random.Range(bottomLeftConstraint.z, topRightConstraint.z);
 
+                //punkt początkowy raycast
                 Vector3 rayCastBeginPoint = new Vector3(xRand, raycastBeginPointHeight, zRand);
-
-                Vector3 offset = new Vector3(.0f, 0.5f, .0f);
 
                 RaycastHit hit;
                 Ray pointGenerationRay = new Ray(rayCastBeginPoint, Vector3.down);
 
+                
                 if (Physics.Raycast(pointGenerationRay, out hit))
                 {
-                    if (hit.collider.tag == "Map")
+                    //sprawdzenie czy punkt-kandydat znajduje się na odpowiedniej płaszczyźnie i zespawnowanie go
+                    foreach (string it in allowedSurfaces)
                     {
-                        point = Instantiate(pointTemplate,hit.point+offset,Quaternion.Euler(new Vector3(90.0f,0.0f,0.0f)));
-                        mExists = true;
+                        if (hit.collider.tag == it)
+                        {
+                            point = Instantiate(pointTemplate, hit.point + offset, Quaternion.Euler(new Vector3(90.0f, 0.0f, 0.0f)));
+                            break;
+                        }
                     }
                 }
 
