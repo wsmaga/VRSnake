@@ -11,10 +11,14 @@ using UnityEngine;
 
 //aby odwołać się trzeba zrzutować enum na inta 
 //np. tablica[(int)d.UL]
-enum d{ UL=0,UR=1,BL=2,BR=3}
+enum D{ UL=0,UR=1,BL=2,BR=3}
+enum GeneratorState { Stopped=0,Trail=1, Gap=2}
 
 public class TrailGenerator : MonoBehaviour
 {
+    public float currDistance;
+    
+    private GeneratorState currentState;
     private Mesh mesh;
     private MeshCollider meshCollider; 
     private Transform[] headTransforms; //aktualne współrzędne markerów
@@ -24,15 +28,16 @@ public class TrailGenerator : MonoBehaviour
     private int currTriangleNo; //aktualny numer wierzchołka trójkąta (rośnie o 1 przy tworzeniu vertice)
     [SerializeField] private GameObject player;
     [SerializeField] private float distanceTreshold = 0.5f; //jak duży ma byc dystans pomiędzy starą lokacją a nową żeby stwierdzić że gracz się rusza
-    [SerializeField] private float timeToNextUpdate = 0.3f;
-    [SerializeField] private uint updatesBeforeGap = 15;
-    [SerializeField] private uint updatesAfterGap = 3;
+    [SerializeField] private float timeToNextUpdate = 0.3f; //jak często ma być odświeżana korutyna
+    [SerializeField] private float trailDistance = 10f; //jak długi ma być kawałek ogona przed następną przerwą
+    [SerializeField] private float gapDistance = 3f; //jak długa ma być przerwa przed następnym kawałkiem ogona
     private bool isGenerating; //zmienna przechowująca informacje czy ma generować scieżkę czy nie
-    private Coroutine trailGenerationCoroutine;
+    private Coroutine trailGenerationCoroutine; //zmienna przechowująca korutynę, potrzebna aby ją zatrzymać
 
     //przed funkcją Start
     private void Awake()
     {
+        currentState = GeneratorState.Trail;
         isGenerating = true;
         mesh = GetComponent<MeshFilter>().mesh;
         meshCollider = GetComponent<MeshCollider>();
@@ -41,11 +46,10 @@ public class TrailGenerator : MonoBehaviour
         currTriangleNo = -1;
         //wyszukanie a następnie przypisanie markerów mesha w dzieciach obiektu
         Transform mp = player.transform.Find("PlayerHead").transform.Find("MeshPoints");
-        headTransforms[(int)d.UL] = mp.Find("MeshPointUL").transform;
-        headTransforms[(int)d.UR] = mp.Find("MeshPointUR").transform;
-        headTransforms[(int)d.BL] = mp.Find("MeshPointBL").transform;
-        headTransforms[(int)d.BR] = mp.Find("MeshPointBR").transform;
-
+        headTransforms[(int)D.UL] = mp.Find("MeshPointUL").transform;
+        headTransforms[(int)D.UR] = mp.Find("MeshPointUR").transform;
+        headTransforms[(int)D.BL] = mp.Find("MeshPointBL").transform;
+        headTransforms[(int)D.BR] = mp.Find("MeshPointBR").transform;
 
         vertices = new List<Vector3>();
         triangles = new List<int>();
@@ -54,8 +58,7 @@ public class TrailGenerator : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        trailGenerationCoroutine=StartCoroutine(TrailGenerationCoroutine());
-
+        trailGenerationCoroutine=StartCoroutine(TrailGenerationDistance());
     }
 
     //funkcja dodająca nowe trójkaty do tablic verices i triangles
@@ -66,83 +69,82 @@ public class TrailGenerator : MonoBehaviour
             //lewa ścianka
             {
                 //górny trójkąt lewa ścianka
-                vertices.Add(headTransforms[(int)d.UL].position);
+                vertices.Add(headTransforms[(int)D.UL].position);
                 triangles.Add(currTriangleNo += 1);
-                vertices.Add(lastPoints[(int)d.UL]);
+                vertices.Add(lastPoints[(int)D.UL]);
                 triangles.Add(currTriangleNo += 1);
-                vertices.Add(lastPoints[(int)d.BL]);
+                vertices.Add(lastPoints[(int)D.BL]);
                 triangles.Add(currTriangleNo += 1);
 
 
                 //dolny trójkąt lewa ścianka
-                vertices.Add(headTransforms[(int)d.UL].position);
+                vertices.Add(headTransforms[(int)D.UL].position);
                 triangles.Add(currTriangleNo += 1);
-                vertices.Add(lastPoints[(int)d.BL]);
+                vertices.Add(lastPoints[(int)D.BL]);
                 triangles.Add(currTriangleNo += 1);
-                vertices.Add(headTransforms[(int)d.BL].position);
+                vertices.Add(headTransforms[(int)D.BL].position);
                 triangles.Add(currTriangleNo += 1);
             }
 
             //prawa ścianka
             {
                 //górny trójkąt prawa ścianka
-                vertices.Add(lastPoints[(int)d.BR]);
+                vertices.Add(lastPoints[(int)D.BR]);
                 triangles.Add(currTriangleNo += 1);
-                vertices.Add(lastPoints[(int)d.UR]);
+                vertices.Add(lastPoints[(int)D.UR]);
                 triangles.Add(currTriangleNo += 1);
-                vertices.Add(headTransforms[(int)d.UR].position);
+                vertices.Add(headTransforms[(int)D.UR].position);
                 triangles.Add(currTriangleNo += 1);
 
                 //dolny trójkąt prawa ścianka
-                vertices.Add(headTransforms[(int)d.BR].position);
+                vertices.Add(headTransforms[(int)D.BR].position);
                 triangles.Add(currTriangleNo += 1);
-                vertices.Add(lastPoints[(int)d.BR]);
+                vertices.Add(lastPoints[(int)D.BR]);
                 triangles.Add(currTriangleNo += 1);
-                vertices.Add(headTransforms[(int)d.UR].position);
+                vertices.Add(headTransforms[(int)D.UR].position);
                 triangles.Add(currTriangleNo += 1);
             }
 
             //górna ścianka
             {
                 //lewy trójkąt górna ścianka
-                vertices.Add(headTransforms[(int)d.UL].position);
+                vertices.Add(headTransforms[(int)D.UL].position);
                 triangles.Add(currTriangleNo += 1);
-                vertices.Add(headTransforms[(int)d.UR].position);
+                vertices.Add(headTransforms[(int)D.UR].position);
                 triangles.Add(currTriangleNo += 1);
-                vertices.Add(lastPoints[(int)d.UL]);
+                vertices.Add(lastPoints[(int)D.UL]);
                 triangles.Add(currTriangleNo += 1);
 
 
                 //prawy trójkąt górna ścianka
-                vertices.Add(headTransforms[(int)d.UR].position);
+                vertices.Add(headTransforms[(int)D.UR].position);
                 triangles.Add(currTriangleNo += 1);
-                vertices.Add(lastPoints[(int)d.UR]);
+                vertices.Add(lastPoints[(int)D.UR]);
                 triangles.Add(currTriangleNo += 1);
-                vertices.Add(lastPoints[(int)d.UL]);
+                vertices.Add(lastPoints[(int)D.UL]);
                 triangles.Add(currTriangleNo += 1);
             }
 
             //dolna ścianka
             {
                 //lewy trójkąt dolna ścianka
-                vertices.Add(lastPoints[(int)d.BL]);
+                vertices.Add(lastPoints[(int)D.BL]);
                 triangles.Add(currTriangleNo += 1);
-                vertices.Add(headTransforms[(int)d.BR].position);
+                vertices.Add(headTransforms[(int)D.BR].position);
                 triangles.Add(currTriangleNo += 1);
-                vertices.Add(headTransforms[(int)d.BL].position);
+                vertices.Add(headTransforms[(int)D.BL].position);
                 triangles.Add(currTriangleNo += 1);
 
 
                 //prawy trójkąt dolna ścianka
-                vertices.Add(lastPoints[(int)d.BL]);
+                vertices.Add(lastPoints[(int)D.BL]);
                 triangles.Add(currTriangleNo += 1);
-                vertices.Add(lastPoints[(int)d.BR]);
+                vertices.Add(lastPoints[(int)D.BR]);
                 triangles.Add(currTriangleNo += 1);
-                vertices.Add(headTransforms[(int)d.BR].position);
+                vertices.Add(headTransforms[(int)D.BR].position);
                 triangles.Add(currTriangleNo += 1);
             }
             UpdateMesh();
-            SetLastPoints();
         }
         
     }
@@ -162,75 +164,99 @@ public class TrailGenerator : MonoBehaviour
     //funkcja przypisująca aktualne wartości do tablicy lastPoints
     private void SetLastPoints()
     {
-        lastPoints[(int)d.UL] = headTransforms[(int)d.UL].position;
-        lastPoints[(int)d.UR] = headTransforms[(int)d.UR].position;
-        lastPoints[(int)d.BL] = headTransforms[(int)d.BL].position;
-        lastPoints[(int)d.BR] = headTransforms[(int)d.BR].position;
+        lastPoints[(int)D.UL] = headTransforms[(int)D.UL].position;
+        lastPoints[(int)D.UR] = headTransforms[(int)D.UR].position;
+        lastPoints[(int)D.BL] = headTransforms[(int)D.BL].position;
+        lastPoints[(int)D.BR] = headTransforms[(int)D.BR].position;
     }
 
     // Update is called once per frame
     void Update()
-    {
-
-
-    }
+    { }
     
     //funkcja tworząca początkową ściankę ogona
     private void GenerateFirstPlane()
     {
-      
-        vertices.Add(headTransforms[(int)d.UL].position);
+        vertices.Add(headTransforms[(int)D.UL].position);
         triangles.Add(currTriangleNo += 1);
-        vertices.Add(headTransforms[(int)d.UR].position);
+        vertices.Add(headTransforms[(int)D.UR].position);
         triangles.Add(currTriangleNo += 1);
-        vertices.Add(headTransforms[(int)d.BL].position);
+        vertices.Add(headTransforms[(int)D.BL].position);
         triangles.Add(currTriangleNo += 1);
-        vertices.Add(headTransforms[(int)d.UR].position);
+        vertices.Add(headTransforms[(int)D.UR].position);
         triangles.Add(currTriangleNo += 1);
-        vertices.Add(headTransforms[(int)d.BR].position);
+        vertices.Add(headTransforms[(int)D.BR].position);
         triangles.Add(currTriangleNo += 1);
-        vertices.Add(headTransforms[(int)d.BL].position);
+        vertices.Add(headTransforms[(int)D.BL].position);
         triangles.Add(currTriangleNo += 1);
-        SetLastPoints();
         UpdateMesh();
     }
 
     //funkcja tworząca końcową ściankę ogona
     private void GenerateLastPlane()
     {
-        vertices.Add(lastPoints[(int)d.BL]);
+        vertices.Add(lastPoints[(int)D.BL]);
         triangles.Add(currTriangleNo += 1);
-        vertices.Add(lastPoints[(int)d.UR]);
+        vertices.Add(lastPoints[(int)D.UR]);
         triangles.Add(currTriangleNo += 1);
-        vertices.Add(lastPoints[(int)d.UL]);
+        vertices.Add(lastPoints[(int)D.UL]);
         triangles.Add(currTriangleNo += 1);
-        vertices.Add(lastPoints[(int)d.BL]);
+        vertices.Add(lastPoints[(int)D.BL]);
         triangles.Add(currTriangleNo += 1);
-        vertices.Add(lastPoints[(int)d.BR]);
+        vertices.Add(lastPoints[(int)D.BR]);
         triangles.Add(currTriangleNo += 1);
-        vertices.Add(lastPoints[(int)d.UR]);
+        vertices.Add(lastPoints[(int)D.UR]);
         triangles.Add(currTriangleNo += 1);
         UpdateMesh();
     }
     //korutyna generująca ogon gracza
-    IEnumerator TrailGenerationCoroutine()
+
+    IEnumerator TrailGenerationDistance()
     {
-        while(isGenerating)
+        //generowanie pierwszego kawałka poczatkowego
+        GenerateFirstPlane();
+        SetLastPoints();
+        yield return new WaitForSeconds(timeToNextUpdate);
+        while (currentState != GeneratorState.Stopped)
         {
-            Debug.Log("COROUTINE:Generate first plane");
-            GenerateFirstPlane();
-            yield return new WaitForSeconds(timeToNextUpdate);
-            for (int i = 0; i < updatesBeforeGap; i++)
+            
+            switch (currentState)
             {
-                GenerateTrailPart();
-                yield return new WaitForSeconds(timeToNextUpdate);
+                case GeneratorState.Trail: //jeżeli maszyna stanów jest w stanie Trail (czyli generuje kawałek ogona)
+                    {
+                        if (currDistance < trailDistance) //jezeli przebyty dystans jest mniejszy od ustalonej długości kawałka to generuj kawałek i zwiększ długość
+                        {
+                            GenerateTrailPart();
+                            currDistance += MovedDistance();
+                            SetLastPoints();
+                        }
+                        else //jeżeli nie wygeneruj końcowy kawałek wyzeruj dystans i zmień stan na Gap
+                        {
+                            GenerateLastPlane();
+                            SetLastPoints();
+                            currentState = GeneratorState.Gap;
+                            currDistance = 0f;
+                        }
+
+                        break;
+                    }
+                case GeneratorState.Gap: //jeżeli maszyna stanów jest w stanie Gap (czyli generuje przerwę)
+                    {
+                        currDistance += MovedDistance(); //zwiększ przebyty dystans
+                        if (currDistance >= gapDistance) //jeżeli przebyty dystans jest większy od ustalonej długości przerwy to 
+                        {                              //wygeneruj początkowy kawałek,  wyzeruj dystans i zmień stan
+                            GenerateFirstPlane();
+                            currDistance = 0f;
+                            currentState = GeneratorState.Trail;
+                        }
+                        SetLastPoints();
+                        break;
+                    }
+
             }
-            Debug.Log("COROUTINE:Generate last plane");
-            GenerateLastPlane();
-            yield return new WaitForSeconds(timeToNextUpdate*updatesAfterGap);
+            yield return new WaitForSeconds(timeToNextUpdate);
         }
     }
-
     //funkcje zatrzymujące i wznawiające generowanie ścieżki
     public void StopGenerating()
     {
@@ -242,7 +268,7 @@ public class TrailGenerator : MonoBehaviour
     public void StartGenerating()
     {
         GenerateFirstPlane();
-        trailGenerationCoroutine=StartCoroutine(TrailGenerationCoroutine());
+        trailGenerationCoroutine=StartCoroutine(TrailGenerationDistance());
         isGenerating = true;
     }
     public bool IsGenerating() { return isGenerating; }
@@ -260,5 +286,12 @@ public class TrailGenerator : MonoBehaviour
             return false;
         else
             return true;
+    }
+
+    //zwraca odległość od ostatniego update'a
+    private float MovedDistance()
+    {
+        return (Vector3.Distance(headTransforms[(int)D.UL].position, lastPoints[(int)D.UL])
+              + Vector3.Distance(headTransforms[(int)D.UR].position, lastPoints[(int)D.UR])) / 2;
     }
 }
