@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using UnityEngine.UI;
 
 public class VRMovement : MonoBehaviour
 {
@@ -14,11 +14,15 @@ public class VRMovement : MonoBehaviour
     [SerializeField] private Transform snakeHead; //pozycja i rotacja głowy węża
     [SerializeField] private GameObject trailGenerator; //obiekt generujący ogon węża
     [SerializeField] private Material deadMaterial;
+    [SerializeField] private GameObject uiCanvas;
+    public int points;
 
     // Start is called before the first frame update
     void Start()
     {
         characterController = GetComponent<CharacterController>();
+        points = 0;
+        uiCanvas.GetComponent<Text>().text="Points: "+points.ToString();
     }
 
     // Update is called once per frame
@@ -38,30 +42,29 @@ public class VRMovement : MonoBehaviour
         }
 
     }
-    private void OnTriggerEnter(Collider other)
-    {
-        if (trailGenerator.GetComponent<TrailGenerator>().IsGenerating())
-        {
-            Debug.Log("Detected collision with [" + other.gameObject.tag + "]");
-            KillPlayer();
-        }
-    }
     
-    //obsługa kolizji kontrolera gracza
     private void OnControllerColliderHit(ControllerColliderHit hit)
     {
-        //na potrzeby testów przy zderzeniu z ogonem przestań generować ogon
-        if (hit.gameObject.tag == "Trail")
-        {
-            if (trailGenerator.GetComponent<TrailGenerator>().IsGenerating())
-            {
-                Debug.Log("Collided with Trail");
-                KillPlayer();
-            }
-        }
-        //else if (hit.gameObject.tag != "Map")
-           // Debug.Log("Collided with " + hit.gameObject.tag);
+        if(hit.gameObject.tag=="Trail")
+            CollisionHandler(hit.gameObject);
     }
+
+    //funkcja zanjmująca się obslugą kolizji, publiczna bo może być wywołana z przedniego collidera
+    public void CollisionHandler(GameObject other) {
+        if (trailGenerator.GetComponent<TrailGenerator>().IsGenerating())
+        {
+            Debug.Log("Detected collision with [" + other.tag + "]");
+            if (other.tag == "Point")
+            {
+                Destroy(other);
+                points++;
+                uiCanvas.GetComponent<Text>().text = "Points: " + points.ToString();
+            }
+            else
+                KillPlayer();
+        }
+    }
+    //funkcja zabijająca gracza, w chwili obecnej na potrzeby testów zostawia klona głowy w miejscu śmierci
     private void KillPlayer()
     {
         trailGenerator.GetComponent<TrailGenerator>().StopGenerating();
@@ -69,6 +72,7 @@ public class VRMovement : MonoBehaviour
         GameObject temp = Instantiate(playerHead, playerHead.transform.position, playerHead.transform.rotation);
         temp.layer = 0;
         temp.GetComponent<MeshRenderer>().material = deadMaterial;
+        uiCanvas.GetComponent<Text>().text = "Game Over!\nFinal score: " + points.ToString();
         Handheld.Vibrate();
     }
 

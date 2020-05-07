@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Trail
   - Map
+  - Point
   layers:
   - Default
   - TransparentFX

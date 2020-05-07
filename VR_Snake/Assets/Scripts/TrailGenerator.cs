@@ -265,12 +265,14 @@ public class TrailGenerator : MonoBehaviour
         StopCoroutine(trailGenerationCoroutine);
         GenerateLastPlane();
         isGenerating = false;
+        this.GetComponent<MeshCollider>().enabled = false;
     }
     public void StartGenerating()
     {
         GenerateFirstPlane();
         trailGenerationCoroutine=StartCoroutine(TrailGenerationDistance());
         isGenerating = true;
+        this.GetComponent<MeshCollider>().enabled = true;
     }
     public bool IsGenerating() { return isGenerating; }
 

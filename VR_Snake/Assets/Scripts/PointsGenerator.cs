@@ -21,7 +21,7 @@ public class PointsGenerator : MonoBehaviour
     [SerializeField] List<string> allowedSurfaces;
 
     //przesunięcie, o które przesunięty jest punkt spawnowania względem punktu-kandydata
-    Vector3 offset = new Vector3(.0f, 0.5f, .0f);
+    Vector3 offset = new Vector3(.0f, 0.7f, .0f);
 
     //rzeczywisty punkt znajdujący się na planszy
     private GameObject point;
@@ -55,7 +55,7 @@ public class PointsGenerator : MonoBehaviour
                     {
                         if (hit.collider.tag == it)
                         {
-                            point = Instantiate(pointTemplate, hit.point + offset, Quaternion.Euler(new Vector3(90.0f, 0.0f, 0.0f)));
+                            point = Instantiate(pointTemplate, hit.point + offset, Quaternion.Euler(new Vector3(0.0f, 0.0f, 0.0f)));
                             break;
                         }
                     }
