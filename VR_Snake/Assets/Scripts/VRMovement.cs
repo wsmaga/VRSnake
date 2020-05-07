@@ -5,7 +5,6 @@ using UnityEngine;
 
 public class VRMovement : MonoBehaviour
 {
-    private const float vectorResize = 0.01f; //stała zmniejszająca długość wektora na sensowną długość
     public float mSpeed = 3.0f; //prędkość poruszania
     public float gravity = 2.0f; //siła gravitacji
     private bool isMoving = true; //zmienna przechowująca informacje czy gracz się posrusza
@@ -30,16 +29,24 @@ public class VRMovement : MonoBehaviour
             //ustaw rotację w osi y głowy węża na rotację kamery
             snakeHead.rotation = Quaternion.Euler(0, cameraTransform.localEulerAngles.y, 0);
             //oblicz wektor do przodu  na podstawie głowy węża
-            Vector3 vForward = snakeHead.transform.forward*vectorResize;
+            Vector3 vForward = snakeHead.transform.forward;
             //zastosuj siłę grawitacji
-            vForward.y = -gravity*vectorResize;
+            vForward.y = -gravity;
             //przesuń gracza o wypadkowy wektor * prędkość
-            characterController.Move(vForward*mSpeed);
+            characterController.Move(vForward*mSpeed * Time.deltaTime);
 
         }
 
     }
-
+    private void OnTriggerEnter(Collider other)
+    {
+        if (trailGenerator.GetComponent<TrailGenerator>().IsGenerating())
+        {
+            Debug.Log("Detected collision with [" + other.gameObject.tag + "]");
+            KillPlayer();
+        }
+    }
+    
     //obsługa kolizji kontrolera gracza
     private void OnControllerColliderHit(ControllerColliderHit hit)
     {
@@ -49,16 +56,21 @@ public class VRMovement : MonoBehaviour
             if (trailGenerator.GetComponent<TrailGenerator>().IsGenerating())
             {
                 Debug.Log("Collided with Trail");
-                trailGenerator.GetComponent<TrailGenerator>().StopGenerating();
-                GameObject playerHead = this.transform.Find("PlayerHead").gameObject;
-                GameObject temp=Instantiate(playerHead, playerHead.transform.position, playerHead.transform.rotation);
-                temp.layer = 0;
-                temp.GetComponent<MeshRenderer>().material = deadMaterial;
-                Handheld.Vibrate();
+                KillPlayer();
             }
         }
-        else if (hit.gameObject.tag != "Map")
-            Debug.Log("Collided with " + hit.gameObject.tag);
+        //else if (hit.gameObject.tag != "Map")
+           // Debug.Log("Collided with " + hit.gameObject.tag);
     }
-    
+    private void KillPlayer()
+    {
+        trailGenerator.GetComponent<TrailGenerator>().StopGenerating();
+        GameObject playerHead = this.transform.Find("HeadObject").gameObject;
+        GameObject temp = Instantiate(playerHead, playerHead.transform.position, playerHead.transform.rotation);
+        temp.layer = 0;
+        temp.GetComponent<MeshRenderer>().material = deadMaterial;
+        Handheld.Vibrate();
+    }
+
+
 }
