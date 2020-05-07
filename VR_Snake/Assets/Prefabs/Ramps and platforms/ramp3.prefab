@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 5820197765553140845}
   m_Layer: 0
   m_Name: ramp3
-  m_TagString: Untagged
+  m_TagString: Bridge
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
