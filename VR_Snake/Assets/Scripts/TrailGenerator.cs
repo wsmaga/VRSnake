@@ -45,7 +45,7 @@ public class TrailGenerator : MonoBehaviour
         lastPoints = new Vector3[4];
         currTriangleNo = -1;
         //wyszukanie a następnie przypisanie markerów mesha w dzieciach obiektu
-        Transform mp = player.transform.Find("PlayerHead").transform.Find("MeshPoints");
+        Transform mp = player.transform.Find("HeadObject").transform.Find("MeshPoints");
         headTransforms[(int)D.UL] = mp.Find("MeshPointUL").transform;
         headTransforms[(int)D.UR] = mp.Find("MeshPointUR").transform;
         headTransforms[(int)D.BL] = mp.Find("MeshPointBL").transform;
@@ -158,6 +158,7 @@ public class TrailGenerator : MonoBehaviour
         mesh.Optimize();
         mesh.RecalculateNormals();
         meshCollider.sharedMesh = mesh;
+        //Debug.Break();
       
     }
 
@@ -264,12 +265,14 @@ public class TrailGenerator : MonoBehaviour
         StopCoroutine(trailGenerationCoroutine);
         GenerateLastPlane();
         isGenerating = false;
+        this.GetComponent<MeshCollider>().enabled = false;
     }
     public void StartGenerating()
     {
         GenerateFirstPlane();
         trailGenerationCoroutine=StartCoroutine(TrailGenerationDistance());
         isGenerating = true;
+        this.GetComponent<MeshCollider>().enabled = true;
     }
     public bool IsGenerating() { return isGenerating; }
 
