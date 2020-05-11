@@ -69,79 +69,79 @@ public class TrailGenerator : MonoBehaviour
             //lewa ścianka
             {
                 //górny trójkąt lewa ścianka
-                vertices.Add(headTransforms[(int)D.UL].position);
+                vertices.Add(this.transform.InverseTransformPoint(headTransforms[(int)D.UL].position));
                 triangles.Add(currTriangleNo += 1);
-                vertices.Add(lastPoints[(int)D.UL]);
+                vertices.Add(this.transform.InverseTransformPoint(lastPoints[(int)D.UL]));
                 triangles.Add(currTriangleNo += 1);
-                vertices.Add(lastPoints[(int)D.BL]);
+                vertices.Add(this.transform.InverseTransformPoint(lastPoints[(int)D.BL]));
                 triangles.Add(currTriangleNo += 1);
 
 
                 //dolny trójkąt lewa ścianka
-                vertices.Add(headTransforms[(int)D.UL].position);
+                vertices.Add(this.transform.InverseTransformPoint(headTransforms[(int)D.UL].position));
                 triangles.Add(currTriangleNo += 1);
-                vertices.Add(lastPoints[(int)D.BL]);
+                vertices.Add(this.transform.InverseTransformPoint(lastPoints[(int)D.BL]));
                 triangles.Add(currTriangleNo += 1);
-                vertices.Add(headTransforms[(int)D.BL].position);
+                vertices.Add(this.transform.InverseTransformPoint(headTransforms[(int)D.BL].position));
                 triangles.Add(currTriangleNo += 1);
             }
 
             //prawa ścianka
             {
                 //górny trójkąt prawa ścianka
-                vertices.Add(lastPoints[(int)D.BR]);
+                vertices.Add(this.transform.InverseTransformPoint(lastPoints[(int)D.BR]));
                 triangles.Add(currTriangleNo += 1);
-                vertices.Add(lastPoints[(int)D.UR]);
+                vertices.Add(this.transform.InverseTransformPoint(lastPoints[(int)D.UR]));
                 triangles.Add(currTriangleNo += 1);
-                vertices.Add(headTransforms[(int)D.UR].position);
+                vertices.Add(this.transform.InverseTransformPoint(headTransforms[(int)D.UR].position));
                 triangles.Add(currTriangleNo += 1);
 
                 //dolny trójkąt prawa ścianka
-                vertices.Add(headTransforms[(int)D.BR].position);
+                vertices.Add(this.transform.InverseTransformPoint(headTransforms[(int)D.BR].position));
                 triangles.Add(currTriangleNo += 1);
-                vertices.Add(lastPoints[(int)D.BR]);
+                vertices.Add(this.transform.InverseTransformPoint(lastPoints[(int)D.BR]));
                 triangles.Add(currTriangleNo += 1);
-                vertices.Add(headTransforms[(int)D.UR].position);
+                vertices.Add(this.transform.InverseTransformPoint(headTransforms[(int)D.UR].position));
                 triangles.Add(currTriangleNo += 1);
             }
 
             //górna ścianka
             {
                 //lewy trójkąt górna ścianka
-                vertices.Add(headTransforms[(int)D.UL].position);
+                vertices.Add(this.transform.InverseTransformPoint(headTransforms[(int)D.UL].position));
                 triangles.Add(currTriangleNo += 1);
-                vertices.Add(headTransforms[(int)D.UR].position);
+                vertices.Add(this.transform.InverseTransformPoint(headTransforms[(int)D.UR].position));
                 triangles.Add(currTriangleNo += 1);
-                vertices.Add(lastPoints[(int)D.UL]);
+                vertices.Add(this.transform.InverseTransformPoint(lastPoints[(int)D.UL]));
                 triangles.Add(currTriangleNo += 1);
 
 
                 //prawy trójkąt górna ścianka
-                vertices.Add(headTransforms[(int)D.UR].position);
+                vertices.Add(this.transform.InverseTransformPoint(headTransforms[(int)D.UR].position));
                 triangles.Add(currTriangleNo += 1);
-                vertices.Add(lastPoints[(int)D.UR]);
+                vertices.Add(this.transform.InverseTransformPoint(lastPoints[(int)D.UR]));
                 triangles.Add(currTriangleNo += 1);
-                vertices.Add(lastPoints[(int)D.UL]);
+                vertices.Add(this.transform.InverseTransformPoint(lastPoints[(int)D.UL]));
                 triangles.Add(currTriangleNo += 1);
             }
 
             //dolna ścianka
             {
                 //lewy trójkąt dolna ścianka
-                vertices.Add(lastPoints[(int)D.BL]);
+                vertices.Add(this.transform.InverseTransformPoint(lastPoints[(int)D.BL]));
                 triangles.Add(currTriangleNo += 1);
-                vertices.Add(headTransforms[(int)D.BR].position);
+                vertices.Add(this.transform.InverseTransformPoint(headTransforms[(int)D.BR].position));
                 triangles.Add(currTriangleNo += 1);
-                vertices.Add(headTransforms[(int)D.BL].position);
+                vertices.Add(this.transform.InverseTransformPoint(headTransforms[(int)D.BL].position));
                 triangles.Add(currTriangleNo += 1);
 
 
                 //prawy trójkąt dolna ścianka
-                vertices.Add(lastPoints[(int)D.BL]);
+                vertices.Add(this.transform.InverseTransformPoint(lastPoints[(int)D.BL]));
                 triangles.Add(currTriangleNo += 1);
-                vertices.Add(lastPoints[(int)D.BR]);
+                vertices.Add(this.transform.InverseTransformPoint(lastPoints[(int)D.BR]));
                 triangles.Add(currTriangleNo += 1);
-                vertices.Add(headTransforms[(int)D.BR].position);
+                vertices.Add(this.transform.InverseTransformPoint(headTransforms[(int)D.BR].position));
                 triangles.Add(currTriangleNo += 1);
             }
             UpdateMesh();
@@ -178,17 +178,17 @@ public class TrailGenerator : MonoBehaviour
     //funkcja tworząca początkową ściankę ogona
     private void GenerateFirstPlane()
     {
-        vertices.Add(headTransforms[(int)D.UL].position);
+        vertices.Add(this.transform.InverseTransformPoint(headTransforms[(int)D.UL].position));
         triangles.Add(currTriangleNo += 1);
-        vertices.Add(headTransforms[(int)D.UR].position);
+        vertices.Add(this.transform.InverseTransformPoint(headTransforms[(int)D.UR].position));
         triangles.Add(currTriangleNo += 1);
-        vertices.Add(headTransforms[(int)D.BL].position);
+        vertices.Add(this.transform.InverseTransformPoint(headTransforms[(int)D.BL].position));
         triangles.Add(currTriangleNo += 1);
-        vertices.Add(headTransforms[(int)D.UR].position);
+        vertices.Add(this.transform.InverseTransformPoint(headTransforms[(int)D.UR].position));
         triangles.Add(currTriangleNo += 1);
-        vertices.Add(headTransforms[(int)D.BR].position);
+        vertices.Add(this.transform.InverseTransformPoint(headTransforms[(int)D.BR].position));
         triangles.Add(currTriangleNo += 1);
-        vertices.Add(headTransforms[(int)D.BL].position);
+        vertices.Add(this.transform.InverseTransformPoint(headTransforms[(int)D.BL].position));
         triangles.Add(currTriangleNo += 1);
         UpdateMesh();
     }
@@ -196,17 +196,17 @@ public class TrailGenerator : MonoBehaviour
     //funkcja tworząca końcową ściankę ogona
     private void GenerateLastPlane()
     {
-        vertices.Add(lastPoints[(int)D.BL]);
+        vertices.Add(this.transform.InverseTransformPoint(lastPoints[(int)D.BL]));
         triangles.Add(currTriangleNo += 1);
-        vertices.Add(lastPoints[(int)D.UR]);
+        vertices.Add(this.transform.InverseTransformPoint(lastPoints[(int)D.UR]));
         triangles.Add(currTriangleNo += 1);
-        vertices.Add(lastPoints[(int)D.UL]);
+        vertices.Add(this.transform.InverseTransformPoint(lastPoints[(int)D.UL]));
         triangles.Add(currTriangleNo += 1);
-        vertices.Add(lastPoints[(int)D.BL]);
+        vertices.Add(this.transform.InverseTransformPoint(lastPoints[(int)D.BL]));
         triangles.Add(currTriangleNo += 1);
-        vertices.Add(lastPoints[(int)D.BR]);
+        vertices.Add(this.transform.InverseTransformPoint(lastPoints[(int)D.BR]));
         triangles.Add(currTriangleNo += 1);
-        vertices.Add(lastPoints[(int)D.UR]);
+        vertices.Add(this.transform.InverseTransformPoint(lastPoints[(int)D.UR]));
         triangles.Add(currTriangleNo += 1);
         UpdateMesh();
     }
