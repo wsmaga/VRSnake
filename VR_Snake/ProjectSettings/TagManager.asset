@@ -6,7 +6,8 @@ TagManager:
   tags:
   - Trail
   - Map
-  - Point
+  - Bridge
+  - Ground
   layers:
   - Default
   - TransparentFX
