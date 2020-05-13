@@ -42,12 +42,6 @@ public class VRMovement : MonoBehaviour
         }
 
     }
-    
-    private void OnControllerColliderHit(ControllerColliderHit hit)
-    {
-        if(hit.gameObject.tag=="Trail")
-            CollisionHandler(hit.gameObject);
-    }
 
     //funkcja zanjmująca się obslugą kolizji, publiczna bo może być wywołana z przedniego collidera
     public void CollisionHandler(GameObject other) {

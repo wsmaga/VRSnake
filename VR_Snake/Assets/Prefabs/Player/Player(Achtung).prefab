@@ -546,7 +546,7 @@ CharacterController:
   m_Height: 1
   m_Radius: 0.25
   m_SlopeLimit: 45
-  m_StepOffset: 1
+  m_StepOffset: 0.1
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
   m_Center: {x: 0, y: -0.25, z: 0}
@@ -663,9 +663,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e9c265ac6b01e614fa3910fba59e9e93, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currDistance: 0
   player: {fileID: 2800847974820537666}
-  distanceTreshold: 0.125
   timeToNextUpdate: 0.05
   trailDistance: 10
   gapDistance: 1
@@ -723,7 +721,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2800847975554021394}
   m_Layer: 0
-  m_Name: Player
+  m_Name: Player(Achtung)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
