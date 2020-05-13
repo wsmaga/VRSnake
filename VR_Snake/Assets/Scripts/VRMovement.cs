@@ -51,13 +51,15 @@ public class VRMovement : MonoBehaviour
 
     //funkcja zanjmująca się obslugą kolizji, publiczna bo może być wywołana z przedniego collidera
     public void CollisionHandler(GameObject other) {
-        if (trailGenerator.GetComponent<TrailGenerator>().IsGenerating())
+        
+        if ((trailGenerator.GetComponent<TrailGenerator>()!=null && trailGenerator.GetComponent<TrailGenerator>().IsGenerating())||(trailGenerator.GetComponent<SnakeTrailGenerator>()!=null && trailGenerator.GetComponent<SnakeTrailGenerator>().IsGenerating()))
         {
             Debug.Log("Detected collision with [" + other.tag + "]");
             if (other.tag == "Point")
             {
                 Destroy(other);
                 points++;
+                trailGenerator.GetComponent<SnakeTrailGenerator>()?.LenghtenTrail();
                 uiCanvas.GetComponent<Text>().text = "Points: " + points.ToString();
             }
             else
@@ -67,7 +69,8 @@ public class VRMovement : MonoBehaviour
     //funkcja zabijająca gracza, w chwili obecnej na potrzeby testów zostawia klona głowy w miejscu śmierci
     private void KillPlayer()
     {
-        trailGenerator.GetComponent<TrailGenerator>().StopGenerating();
+        trailGenerator.GetComponent<TrailGenerator>()?.StopGenerating();
+        trailGenerator.GetComponent<SnakeTrailGenerator>()?.StopGenerating();
         GameObject playerHead = this.transform.Find("HeadObject").gameObject;
         GameObject temp = Instantiate(playerHead, playerHead.transform.position, playerHead.transform.rotation);
         temp.layer = 0;
