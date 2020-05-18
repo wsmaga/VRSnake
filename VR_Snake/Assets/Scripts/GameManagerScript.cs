@@ -15,6 +15,6 @@ public class GameManagerScript : MonoBehaviour
     void Update()
     {
         if (Input.touchCount > 0)
-            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+            SceneManager.LoadScene("MainMenu");
     }
 }
