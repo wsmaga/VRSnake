@@ -50,3 +50,6 @@ MonoBehaviour:
     type: 3}
   allowedSurfaces:
   - Map
+  layerMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
