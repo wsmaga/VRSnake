@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 6
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Lava
+  m_Shader: {fileID: -6465566751694194690, guid: aeda6bad765dd8c40beeef5e6a09d987,
+    type: 3}
+  m_ShaderKeywords: 
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs: []
+    m_Floats:
+    - Vector1_62EFC18F: 0
+    - Vector1_6305C8D3: 0.22
+    - Vector1_975D553B: -141.2
+    - Vector1_E5020200: 0
+    - Vector1_F73A9FD3: 1
+    m_Colors:
+    - Color_3F041261: {r: 2, g: 0.49411765, b: 0, a: 0}
+    - Vector2_62B178D5: {r: 20, g: 20, b: 0, a: 0}
