@@ -7,8 +7,8 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: WallsGridMaterial
-  m_Shader: {fileID: -6465566751694194690, guid: 03d78508288a49642a309ad38c863855,
+  m_Name: Lava 3
+  m_Shader: {fileID: -6465566751694194690, guid: aeda6bad765dd8c40beeef5e6a09d987,
     type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 4
@@ -21,8 +21,11 @@ Material:
     serializedVersion: 3
     m_TexEnvs: []
     m_Floats:
-    - Vector1_7C4CFAE4: 0.1
+    - Vector1_62EFC18F: -1
+    - Vector1_6305C8D3: 1
+    - Vector1_975D553B: 90
+    - Vector1_E5020200: 0.2
+    - Vector1_F73A9FD3: 0
     m_Colors:
-    - Color_3515CEA0: {r: 0, g: 0, b: 0, a: 0}
-    - Color_5F879D96: {r: 1, g: 0.08962262, b: 0.08962262, a: 0}
-    - Vector2_2FDD886C: {r: 50, g: 5, b: 0, a: 0}
+    - Color_3F041261: {r: 3.9999995, g: 0.6515494, b: 0, a: 0}
+    - Vector2_62B178D5: {r: 2, g: 2, b: 0, a: 0}
