@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: FloorGridMaterial
+  m_Name: Wall material 2
   m_Shader: {fileID: -6465566751694194690, guid: 03d78508288a49642a309ad38c863855,
     type: 3}
   m_ShaderKeywords: 
@@ -25,4 +25,4 @@ Material:
     m_Colors:
     - Color_3515CEA0: {r: 0, g: 0, b: 0, a: 0}
     - Color_5F879D96: {r: 1, g: 0.08962262, b: 0.08962262, a: 0}
-    - Vector2_2FDD886C: {r: 50, g: 50, b: 0, a: 0}
+    - Vector2_2FDD886C: {r: 25, g: 5, b: 0, a: 0}

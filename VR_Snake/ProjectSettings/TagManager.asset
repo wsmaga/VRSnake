@@ -8,6 +8,8 @@ TagManager:
   - Map
   - Bridge
   - Ground
+  - Point
+  - Lava
   layers:
   - Default
   - TransparentFX
