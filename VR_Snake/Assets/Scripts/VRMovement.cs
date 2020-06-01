@@ -42,7 +42,12 @@ public class VRMovement : MonoBehaviour
         }
 
     }
-
+    //detekcja kolizji z lavą
+    public void OnControllerColliderHit(ControllerColliderHit hit)
+    {
+        if (hit.gameObject.tag == "Lava")
+            CollisionHandler(hit.gameObject);
+    }
     //funkcja zanjmująca się obslugą kolizji, publiczna bo może być wywołana z przedniego collidera
     public void CollisionHandler(GameObject other) {
         
