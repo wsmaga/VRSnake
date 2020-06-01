@@ -54,7 +54,14 @@ public class VRMovement : MonoBehaviour
         if ((trailGenerator.GetComponent<TrailGenerator>()!=null && trailGenerator.GetComponent<TrailGenerator>().IsGenerating())||(trailGenerator.GetComponent<SnakeTrailGenerator>()!=null && trailGenerator.GetComponent<SnakeTrailGenerator>().IsGenerating()))
         {
             Debug.Log("Detected collision with [" + other.tag + "]");
-            if (other.tag == "Point")
+            if (other.tag.StartsWith("Powerup"))
+            {
+                string type = other.tag.Replace("Powerup","");
+                Destroy(other);
+                GameObject parent = this.transform?.parent.gameObject;
+                AttachPowerup(type,parent);
+            }
+            else if (other.tag == "Point")
             {
                 Destroy(other);
                 points++;
@@ -64,6 +71,25 @@ public class VRMovement : MonoBehaviour
             else
                 KillPlayer();
         }
+    }
+
+    private void AttachPowerup(string type, GameObject player)
+    {
+        if (player != null)
+        {
+            switch (type)
+            {
+                case "Speed":
+                    SpeedPowerup powerup = player.AddComponent<SpeedPowerup>();
+                    powerup?.Initialize(this);
+                    break;
+                default:
+                    Debug.Log("Unknown powerup type: " + type);
+                    break;
+            }
+        }
+        else
+            Debug.Log("Error getting parent when attaching powerup");
     }
     //funkcja zabijająca gracza, w chwili obecnej na potrzeby testów zostawia klona głowy w miejscu śmierci
     private void KillPlayer()
