@@ -21,8 +21,8 @@ public class FrontCollisionDetection : MonoBehaviour
         if (this.transform.parent.parent != null)
         {
             Debug.Log("Trigger from front collider");
-            if(other.gameObject.tag=="Point")
-                this.transform.parent.transform.parent.GetComponent<VRMovement>().CollisionHandler(other.gameObject);
+            //if(other.gameObject.tag=="Point")
+            this.transform.parent.transform.parent.GetComponent<VRMovement>().CollisionHandler(other.gameObject);
         }
         //usuń skrypt z klona
         else
