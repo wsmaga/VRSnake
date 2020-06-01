@@ -26,7 +26,6 @@ public class PointsGenerator : MonoBehaviour
     //rzeczywisty punkt znajdujący się na planszy
     private GameObject point;
 
-
     // Start is called before the first frame update
     void Start()
     {
@@ -44,23 +43,27 @@ public class PointsGenerator : MonoBehaviour
                 //punkt początkowy raycast
                 Vector3 rayCastBeginPoint = new Vector3(xRand, raycastBeginPointHeight, zRand);
 
-                RaycastHit hit;
+                RaycastHit[] hits;
                 Ray pointGenerationRay = new Ray(rayCastBeginPoint, Vector3.down);
 
-                
-                if (Physics.Raycast(pointGenerationRay, out hit))
-                {
-                    //sprawdzenie czy punkt-kandydat znajduje się na odpowiedniej płaszczyźnie i zespawnowanie go
-                    foreach (string it in allowedSurfaces)
+                //Wykonanie raycast
+                hits = Physics.SphereCastAll(rayCastBeginPoint, pointTemplate.GetComponent<SphereCollider>().radius, Vector3.down,raycastBeginPointHeight * 2.0f);
+
+                var goodHits = new List<RaycastHit>();
+
+                foreach(var hit in hits){
+                    foreach (string surf in allowedSurfaces)    //wykluczenie "złych" trafień
                     {
-                        if (hit.collider.tag == it)
+                        if (hit.collider.tag == surf)
                         {
-                            point = Instantiate(pointTemplate, hit.point + offset, Quaternion.Euler(new Vector3(0.0f, 0.0f, 0.0f)));
+                            goodHits.Add(hit);
                             break;
                         }
                     }
                 }
 
-       }
+                //wygenerowanie punktu na losowej wysokości
+                point = Instantiate(pointTemplate,goodHits[Random.Range(0,goodHits.Count)].point+offset, Quaternion.Euler(new Vector3(0.0f, 0.0f, 0.0f)));
+       }   
     }
 }
