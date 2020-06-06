@@ -3069,6 +3069,16 @@ PrefabInstance:
       propertyPath: layerMask.m_Bits
       value: 4294967295
       objectReference: {fileID: 0}
+    - target: {fileID: 1034406397215404450, guid: 83fe95aceb74c204a941bbfc01fb993a,
+        type: 3}
+      propertyPath: powerUpsCount
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1034406397215404450, guid: 83fe95aceb74c204a941bbfc01fb993a,
+        type: 3}
+      propertyPath: pointsCount
+      value: 4
+      objectReference: {fileID: 0}
     - target: {fileID: 1034406397215404451, guid: 83fe95aceb74c204a941bbfc01fb993a,
         type: 3}
       propertyPath: m_Name
