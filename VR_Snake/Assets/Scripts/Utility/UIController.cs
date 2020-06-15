@@ -1,5 +1,7 @@
-﻿using System.Collections;
+﻿using Google.ProtocolBuffers;
+using System.Collections;
 using System.Collections.Generic;
+//using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -11,9 +13,30 @@ public class UIController : MonoBehaviour
     [SerializeField]
     Canvas mapSelect;
 
+    [SerializeField]
+    GameObject world;
+
+    [SerializeField]
+    GameObject camera;
+
+    private const float WORLDROTSPEED = 0.01f;
+
     public void Start()
     {
         ShowMainMenu();
+    }
+
+    public void Update()
+    {
+        Vector3 worldDir = world.transform.forward;
+        Vector3 playerDir = camera.transform.forward;
+
+        if (Vector3.Angle(worldDir, playerDir) > 70)
+        {
+            Vector3 direction = Vector3.RotateTowards(worldDir, playerDir, WORLDROTSPEED, 1000);
+            direction.y = 0;
+            world.transform.rotation = Quaternion.LookRotation(direction);
+        }
     }
 
     public void ExitGame()
