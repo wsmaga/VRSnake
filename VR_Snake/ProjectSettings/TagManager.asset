@@ -11,6 +11,9 @@ TagManager:
   - Point
   - Lava
   - PowerupSpeed
+  - PowerupDoublePoints
+  - PowerupJump
+  - Jump
   layers:
   - Default
   - TransparentFX

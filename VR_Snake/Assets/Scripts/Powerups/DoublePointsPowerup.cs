@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SpeedPowerup : Powerup<VRMovement>
+public class DoublePointsPowerup : Powerup<VRMovement>
 {
     VRMovement Player;
     public override void Initialize(VRMovement _player)
@@ -18,7 +18,7 @@ public class SpeedPowerup : Powerup<VRMovement>
         {
             if (!reverse)
             {
-                Player.doublePoints = true;
+                Player.doublePoints = true; ;
             }
             else
             {
@@ -27,3 +27,4 @@ public class SpeedPowerup : Powerup<VRMovement>
         }
     }
 }
+
