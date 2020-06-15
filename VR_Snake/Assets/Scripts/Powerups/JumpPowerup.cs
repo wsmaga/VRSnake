@@ -5,9 +5,11 @@ using UnityEngine;
 public class JumpPowerup : Powerup<VRMovement>
 {
     VRMovement Player;
+    private readonly float LifeTimeDefault = 2f;
+
     public override void Initialize(VRMovement _player)
     {
-        LifeTimeCurrent = 2.0f;
+        LifeTimeCurrent = LifeTimeDefault;
         this.Player = _player;
         AffectPlayer(false);
         isInitialized = true;

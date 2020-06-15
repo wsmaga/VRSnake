@@ -71,6 +71,8 @@ MonoBehaviour:
   trailGenerator: {fileID: 6603086552150374783}
   deadMaterial: {fileID: 2100000, guid: 14a641303d790c14491a70e55b53bbfb, type: 2}
   uiCanvas: {fileID: 6603086553389748169}
+  doublePoints: 0
+  isFlying: 0
   points: 0
 --- !u!1 &6603086552150374783
 GameObject:
@@ -539,7 +541,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 0, b: 0, a: 1}
+  m_Color: {r: 0.1942128, g: 1, b: 0, a: 1}
   m_RaycastTarget: 0
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -557,8 +559,9 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "Je\u017Celi jeste\u015B w stanie to przeczyta\u0107 to znaczy \u017Ce
-    co\u015B si\u0119 spierdoli\u0142o ;)\n"
+  m_Text: 'Default Text
+
+'
 --- !u!1 &6603086553609873021
 GameObject:
   m_ObjectHideFlags: 0

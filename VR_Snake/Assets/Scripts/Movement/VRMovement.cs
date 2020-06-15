@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -26,7 +27,8 @@ public class VRMovement : MonoBehaviour
     {
         characterController = GetComponent<CharacterController>();
         points = 0;
-        uiCanvas.GetComponent<Text>().text="Points: "+points.ToString();
+        string str = uiCanvas.GetComponent<Text>().text;
+        uiCanvas.GetComponent<Text>().text = "Points: " + points.ToString();
     }
 
     // Update is called once per frame
@@ -81,7 +83,10 @@ public class VRMovement : MonoBehaviour
                 else
                     points++;
                 trailGenerator.GetComponent<SnakeTrailGenerator>()?.LenghtenTrail();
-                uiCanvas.GetComponent<Text>().text = "Points: " + points.ToString();
+                string str = uiCanvas.GetComponent<Text>().text;
+                Regex regex = new Regex("[0-9]+$");
+                str=regex.Replace(str, points.ToString(), 1);
+                uiCanvas.GetComponent<Text>().text = str;
             }
             else
                 KillPlayer();
@@ -95,17 +100,40 @@ public class VRMovement : MonoBehaviour
             switch (type)
             {
                 case "Speed":
-                    SpeedPowerup powerup = player.AddComponent<SpeedPowerup>();
-                    powerup?.Initialize(this);
-                    break;
+                    {
+                        SpeedPowerup powerup = player.AddComponent<SpeedPowerup>();
+                        powerup?.Initialize(this);
+                        break;
+                    }
                 case "DoublePoints":
-                    DoublePointsPowerup powerup1 = player.AddComponent<DoublePointsPowerup>();
-                    powerup1?.Initialize(this);
-                    break;
+                    {
+                        DoublePointsPowerup powerup = player.GetComponent<DoublePointsPowerup>();
+                        if (powerup != null)
+                            powerup.Refresh();
+                        else
+                        {
+                            powerup = player.AddComponent<DoublePointsPowerup>();
+                            powerup?.Initialize(new DoublePointsPowerupDataContainer
+                            {
+                                _player = this,
+                                _text = uiCanvas.GetComponent<Text>()
+                            });
+                        }
+                        break;
+                    }
                 case "Jump":
-                    JumpPowerup powerup2 = player.AddComponent<JumpPowerup>();
-                    powerup2?.Initialize(this);
-                    break;
+                    {
+                        JumpPowerup powerup = player.GetComponent<JumpPowerup>();
+                        if (powerup != null)
+                            powerup.Refresh();
+                        else
+                        {
+                            powerup = player.AddComponent<JumpPowerup>();
+                            powerup?.Initialize(this);
+                        }
+                        break;
+                    }
+                    
                 default:
                     Debug.Log("Unknown powerup type: " + type);
                     break;

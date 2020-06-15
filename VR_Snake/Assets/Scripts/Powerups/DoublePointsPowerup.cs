@@ -1,14 +1,25 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
-public class DoublePointsPowerup : Powerup<VRMovement>
+public class DoublePointsPowerupDataContainer
 {
-    VRMovement Player;
-    public override void Initialize(VRMovement _player)
+    public VRMovement _player { get; set; }
+    public Text _text { get; set; }
+
+}
+
+public class DoublePointsPowerup : Powerup<DoublePointsPowerupDataContainer>
+{
+    [SerializeField]private VRMovement Player;
+    [SerializeField]private Text UIText;
+    private readonly float LifeTimeDefault = 10f;
+    public override void Initialize(DoublePointsPowerupDataContainer c)
     {
         LifeTimeCurrent = LifeTimeDefault;
-        this.Player = _player;
+        this.Player = c._player;
+        this.UIText = c._text;
         AffectPlayer(false);
         isInitialized = true;
     }
@@ -18,11 +29,15 @@ public class DoublePointsPowerup : Powerup<VRMovement>
         {
             if (!reverse)
             {
-                Player.doublePoints = true; ;
+                Player.doublePoints = true;
+                if (!UIText.text.Contains("Game Over"))
+                    UIText.text += "    DP";
             }
             else
             {
                 Player.doublePoints = false;
+                if(!UIText.text.Contains("Game Over"))
+                    UIText.text = UIText.text.Substring(0, UIText.text.Length - 6);
             }
         }
     }

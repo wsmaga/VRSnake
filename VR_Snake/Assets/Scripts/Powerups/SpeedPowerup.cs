@@ -18,11 +18,11 @@ public class SpeedPowerup : Powerup<VRMovement>
         {
             if (!reverse)
             {
-                Player.doublePoints = true;
+                Player.mSpeed *= 2;
             }
             else
             {
-                Player.doublePoints = false;
+                Player.mSpeed /= 2;
             }
         }
     }
