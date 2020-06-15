@@ -30,12 +30,14 @@ public class DoublePointsPowerup : Powerup<DoublePointsPowerupDataContainer>
             if (!reverse)
             {
                 Player.doublePoints = true;
-                UIText.text += "    DP";
+                if (!UIText.text.Contains("Game Over"))
+                    UIText.text += "    DP";
             }
             else
             {
                 Player.doublePoints = false;
-                UIText.text = UIText.text.Substring(0, UIText.text.Length - 6);
+                if(!UIText.text.Contains("Game Over"))
+                    UIText.text = UIText.text.Substring(0, UIText.text.Length - 6);
             }
         }
     }

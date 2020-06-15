@@ -28,9 +28,7 @@ public class VRMovement : MonoBehaviour
         characterController = GetComponent<CharacterController>();
         points = 0;
         string str = uiCanvas.GetComponent<Text>().text;
-        Regex regex = new Regex(@"^\d+$");
-        regex.Replace(str, points.ToString(), 1);
-        uiCanvas.GetComponent<Text>().text=str;
+        uiCanvas.GetComponent<Text>().text = "Points: " + points.ToString();
     }
 
     // Update is called once per frame
@@ -85,7 +83,10 @@ public class VRMovement : MonoBehaviour
                 else
                     points++;
                 trailGenerator.GetComponent<SnakeTrailGenerator>()?.LenghtenTrail();
-                uiCanvas.GetComponent<Text>().text = "Points: " + points.ToString();
+                string str = uiCanvas.GetComponent<Text>().text;
+                Regex regex = new Regex("[0-9]+$");
+                str=regex.Replace(str, points.ToString(), 1);
+                uiCanvas.GetComponent<Text>().text = str;
             }
             else
                 KillPlayer();
