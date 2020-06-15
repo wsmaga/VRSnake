@@ -15,6 +15,10 @@ public class VRMovement : MonoBehaviour
     [SerializeField] private GameObject trailGenerator; //obiekt generujący ogon węża
     [SerializeField] private Material deadMaterial;
     [SerializeField] private GameObject uiCanvas;
+
+    public bool doublePoints = false;
+    public bool isFlying = false;
+
     public int points;
 
     // Start is called before the first frame update
@@ -34,11 +38,19 @@ public class VRMovement : MonoBehaviour
             snakeHead.rotation = Quaternion.Euler(0, cameraTransform.localEulerAngles.y, 0);
             //oblicz wektor do przodu  na podstawie głowy węża
             Vector3 vForward = snakeHead.transform.forward;
-            //zastosuj siłę grawitacji
-            vForward.y = -gravity;
+            
+            if (!isFlying)
+            {
+                //zastosuj siłę grawitacji
+                vForward.y = -gravity;
+            }
+                
+            else
+            {
+                vForward.y = gravity * 2.0f;
+            }
             //przesuń gracza o wypadkowy wektor * prędkość
             characterController.Move(vForward*mSpeed * Time.deltaTime);
-
         }
 
     }
@@ -64,7 +76,10 @@ public class VRMovement : MonoBehaviour
             else if (other.tag == "Point")
             {
                 Destroy(other);
-                points++;
+                if (doublePoints)
+                    points += 2;
+                else
+                    points++;
                 trailGenerator.GetComponent<SnakeTrailGenerator>()?.LenghtenTrail();
                 uiCanvas.GetComponent<Text>().text = "Points: " + points.ToString();
             }
@@ -82,6 +97,14 @@ public class VRMovement : MonoBehaviour
                 case "Speed":
                     SpeedPowerup powerup = player.AddComponent<SpeedPowerup>();
                     powerup?.Initialize(this);
+                    break;
+                case "DoublePoints":
+                    DoublePointsPowerup powerup1 = player.AddComponent<DoublePointsPowerup>();
+                    powerup1?.Initialize(this);
+                    break;
+                case "Jump":
+                    JumpPowerup powerup2 = player.AddComponent<JumpPowerup>();
+                    powerup2?.Initialize(this);
                     break;
                 default:
                     Debug.Log("Unknown powerup type: " + type);

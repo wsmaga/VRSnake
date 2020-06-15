@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SpeedPowerup : Powerup<VRMovement>
+public class JumpPowerup : Powerup<VRMovement>
 {
     VRMovement Player;
     public override void Initialize(VRMovement _player)
     {
-        LifeTimeCurrent = LifeTimeDefault;
+        LifeTimeCurrent = 2.0f;
         this.Player = _player;
         AffectPlayer(false);
         isInitialized = true;
@@ -18,11 +18,11 @@ public class SpeedPowerup : Powerup<VRMovement>
         {
             if (!reverse)
             {
-                Player.doublePoints = true;
+                Player.isFlying = true;
             }
             else
             {
-                Player.doublePoints = false;
+                Player.isFlying = false;
             }
         }
     }

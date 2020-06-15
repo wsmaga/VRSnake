@@ -17,10 +17,12 @@ public class PointsGenerator : MonoBehaviour
     [SerializeField] float raycastBeginPointHeight;
 
     //szablon punktu, który będzie spawnowany
-    [SerializeField] GameObject pointTemplate;
+    [SerializeField] List<GameObject> pointTemplates;
 
     //lista zawierająca tagi colliderów, na których może się punkt zespawnować
     [SerializeField] List<string> allowedSurfaces;
+
+    [SerializeField] int PointsGenerationInvervalSeconds;
 
     //przesunięcie, o które przesunięty jest punkt spawnowania względem punktu-kandydata
     Vector3 offset = new Vector3(.0f, 0.7f, .0f);
@@ -29,6 +31,8 @@ public class PointsGenerator : MonoBehaviour
     private GameObject point;
 
     private GameObject[] points;
+
+    private float timeCounter;
 
     // Start is called before the first frame update
     void Start()
@@ -39,17 +43,30 @@ public class PointsGenerator : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        for(int i=0; i< pointsCount; i++)
+        //sprawdzenie czy licznik doliczył do 
+        if(PointsGenerationInvervalSeconds - timeCounter < 0.001)
         {
-            if (points[i] == null)
+            for (int i = 0; i < pointsCount; i++)
             {
-                points[i] = generatePowerUp();
+                if (points[i] == null)
+                {
+                    points[i] = generatePowerUp();
+                    break;
+                }
             }
+
+            timeCounter = 0;
         }
+
+        timeCounter += Time.deltaTime;
     }
 
     private GameObject generatePowerUp()
     {
+        //wylosowanie typu powerup'a do zrespienia
+        int templateIndex = UnityEngine.Random.Range(0, pointTemplates.Count);
+
+
         //wylosowanie wektora   3.0f - odległość od ścian mapy
         float xRand = UnityEngine.Random.Range(bottomLeftConstraint.x + 3.0f, topRightConstraint.x - 3.0f);
         float zRand = UnityEngine.Random.Range(bottomLeftConstraint.z + 3.0f, topRightConstraint.z - 3.0f);
@@ -61,7 +78,7 @@ public class PointsGenerator : MonoBehaviour
         Ray pointGenerationRay = new Ray(rayCastBeginPoint, Vector3.down);
 
         //Wykonanie spherecast
-        hits = Physics.SphereCastAll(rayCastBeginPoint, pointTemplate.GetComponent<SphereCollider>().radius, Vector3.down, raycastBeginPointHeight * 2.0f);
+        hits = Physics.SphereCastAll(rayCastBeginPoint, pointTemplates[0].GetComponent<SphereCollider>().radius, Vector3.down, raycastBeginPointHeight * 2.0f);
 
         var goodHits = new List<RaycastHit>();
 
@@ -78,7 +95,7 @@ public class PointsGenerator : MonoBehaviour
         }
 
         //wygenerowanie punktu na losowej wysokości
-        return Instantiate(pointTemplate, goodHits[UnityEngine.Random.Range(0, goodHits.Count)].point + offset, Quaternion.Euler(new Vector3(0.0f, 0.0f, 0.0f)));
+        return Instantiate(pointTemplates[templateIndex], goodHits[UnityEngine.Random.Range(0, goodHits.Count)].point + offset, Quaternion.Euler(new Vector3(0.0f, 0.0f, 0.0f)));
     }
 
 }
