@@ -11,15 +11,21 @@ using UnityEngine;
 
 //aby odwołać się trzeba zrzutować enum na inta 
 //np. tablica[(int)d.UL]
-enum D{ UL=0,UR=1,BL=2,BR=3}
-enum GeneratorState { Stopped=0,Trail=1, Gap=2, Replacing=3}
+enum D { UL = 0, UR = 1, BL = 2, BR = 3 }
 
+//enum utworzony żeby zwiększyć czytelność kodu i na potrzeby maszyny stanów
+enum GeneratorState { Stopped = 0, Trail = 1, Gap = 2, Replacing = 3 }
+
+//klasa generująca ślad gracza na zasadach podobnych jak w grze Achtung die kurve
+//ślad jest generowany ciągle i nie przesuwa się za graczem natomiast generowane są przerwy co określoną długość śladu
+//generowany ślad jest obiektem typu mesh
+//korzystamy z korutyn dla zwiększenia możliwości zarządzania czasem podczas uruchomienia generatora
 public class TrailGenerator : MonoBehaviour
 {
     private float currDistance;
     private GeneratorState currentState;
     private Mesh mesh;
-    private MeshCollider meshCollider; 
+    private MeshCollider meshCollider;
     private Transform[] headTransforms; //aktualne współrzędne markerów
     private Vector3[] lastPoints; //poprzednie współrzędne markerów
     private List<Vector3> vertices; //współrzędne wierzchołków
@@ -38,6 +44,7 @@ public class TrailGenerator : MonoBehaviour
     //przed funkcją Start
     private void Awake()
     {
+        //inicjalizacja zmiennych
         currentState = GeneratorState.Trail;
         isGenerating = true;
         mesh = GetComponent<MeshFilter>().mesh;
@@ -54,12 +61,12 @@ public class TrailGenerator : MonoBehaviour
 
         vertices = new List<Vector3>();
         triangles = new List<int>();
-        
+
     }
     // Start is called before the first frame update
     void Start()
     {
-        trailGenerationCoroutine=StartCoroutine(TrailGenerationDistance());
+        trailGenerationCoroutine = StartCoroutine(TrailGenerationDistance());
     }
 
     //funkcja dodająca nowe trójkaty do tablic verices i triangles
@@ -147,7 +154,7 @@ public class TrailGenerator : MonoBehaviour
             }
             UpdateMesh();
         }
-        
+
     }
 
     //funkcja czyszcząca starego mesha i generująca nowego mesha na podstawie aktualnych tablic
@@ -159,8 +166,7 @@ public class TrailGenerator : MonoBehaviour
         mesh.Optimize();
         mesh.RecalculateNormals();
         meshCollider.sharedMesh = mesh;
-        //Debug.Break();
-      
+
     }
 
     //funkcja przypisująca aktualne wartości do tablicy lastPoints
@@ -172,10 +178,7 @@ public class TrailGenerator : MonoBehaviour
         lastPoints[(int)D.BR] = headTransforms[(int)D.BR].position;
     }
 
-    // Update is called once per frame
-    void Update()
-    { }
-    
+
     //funkcja tworząca przednią ściankę ogona
     private void GenerateFirstPlane()
     {
@@ -211,8 +214,8 @@ public class TrailGenerator : MonoBehaviour
         triangles.Add(currTriangleNo += 1);
         UpdateMesh();
     }
-    //korutyna generująca ogon gracza
 
+    //główna korutyna generująca ogon gracza
     IEnumerator TrailGenerationDistance()
     {
         //generowanie pierwszego przedniego kawałka
@@ -221,7 +224,7 @@ public class TrailGenerator : MonoBehaviour
         yield return new WaitForSeconds(timeToNextUpdate);
         while (currentState != GeneratorState.Stopped)
         {
-            
+
             switch (currentState)
             {
                 case GeneratorState.Trail: //jeżeli maszyna stanów jest w stanie Trail (czyli generuje kawałek ogona)
@@ -262,7 +265,7 @@ public class TrailGenerator : MonoBehaviour
     //funkcje zatrzymujące i wznawiające generowanie ścieżki
     public void StopGenerating()
     {
-      
+
         StopCoroutine(trailGenerationCoroutine);
         GenerateLastPlane();
         isGenerating = false;
@@ -271,7 +274,7 @@ public class TrailGenerator : MonoBehaviour
     public void StartGenerating()
     {
         GenerateFirstPlane();
-        trailGenerationCoroutine=StartCoroutine(TrailGenerationDistance());
+        trailGenerationCoroutine = StartCoroutine(TrailGenerationDistance());
         isGenerating = true;
         this.GetComponent<MeshCollider>().enabled = true;
     }
