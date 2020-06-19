@@ -1,5 +1,5 @@
 # Custom rules:
-!Compiled apk/*
+!Compiled_apk/*
 
 # This .gitignore file should be placed at the root of your Unity project directory
 #
