@@ -1,6 +1,3 @@
-# Custom rules:
-!Compiled_apk/*.apk
-
 # This .gitignore file should be placed at the root of your Unity project directory
 #
 # Get latest from https://github.com/github/gitignore/blob/master/Unity.gitignore
@@ -56,6 +53,7 @@ sysinfo.txt
 
 # Builds
 *.apk
+!Compiled_apk/*.apk
 *.unitypackage
 
 # Crashlytics generated file
